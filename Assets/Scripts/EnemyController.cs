@@ -9,6 +9,11 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float moveInterval = 0.5f;
     [SerializeField] private LayerMask wallLayer;
 
+    // Name of the scene to load when the enemy kills the player.
+    // If empty, the current active scene is reloaded.
+    [SerializeField] [Tooltip("Name of the scene to load when the enemy kills the player. If empty, reloads the current scene.")]
+    public string sceneToLoad = "";
+
     // kept for legacy/config but movement is computed at runtime
     [SerializeField] private Vector2 moveDirection = Vector2.up;
 
@@ -256,10 +261,18 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void EndGame()
+    void EndGame()
     {
         Debug.Log("Pelaaja kuoli!");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        if (!string.IsNullOrEmpty(sceneToLoad))
+        {
+            SceneManager.LoadScene(sceneToLoad);
+        }
+        else
+        {
+            Debug.LogWarning("You forgot to type a scene name in the Inspector!");
+        }
     }
 
     // Simple min-heap for Vector2Int keyed by priority (int).
